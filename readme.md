@@ -973,3 +973,67 @@ var human = new human_1.Human("test", 10, "address");
 /******/ })()
 ;
 ```
+
+
+## ts-loaderはWebpack実行時,Typescriptの型チェックを行ってくれる
+
+上記では
+webpack.config.jsに ts-loaderというモジュールをつかことでwebpackコマンド実行時に
+Typescriptの型チェックを行ってくれる.
+
+ただ,ts-loaderを使わずに babelのモジュールを使うことでもTypescriptをトランスパイルすることができる
+
+```webpack.config.js
+  // ....
+  module: {
+    rules: [
+      // -----------------------------------------------------------------
+      // rules配列に typescript用設定をpushさせる
+      // rulesの適用はスタック的なので優先させるべきloaderは必ず
+      // pushさせる
+      // -----------------------------------------------------------------
+      {
+        test: /\.ts/,
+        use: {
+          loader: "ts-loader",
+        }
+      }
+    ]
+  },
+  // ....
+```
+
+今回のTypescriptは上記の設定によって
+ts-loaderという設定を追加してトランスパイルしたが ts-loaderを使わずに @babel/preset-typescript というモジュールをつかっても
+トランスパイルが可能になる
+
+その場合は以下のようにwebpack.config.jsを変更する
+
+```webpack.config.js
+  module: {
+    rules: [
+      {
+        // -----------------------------------------------------------------
+        // typescriptでトランスパイルする場合は 対象のファイルの正規表現を
+        //  .js および .ts 両方が対応するように修正する
+        // -----------------------------------------------------------------
+        test: /\.(js|ts)$/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: [
+              "@babel/preset-env",
+              "@babel/preset-typescript",
+            ]
+          }
+        }
+      },
+    ]
+  },
+```
+上記のようにbabel-loaderのpresets設定に 
+@babel/preset-env
+@babel/preset-typescript
+上記の2つを設定することでもTypescriptをトランスパイルすることができる
+ただしこの場合は  webpackコマンドを実行した際に型チェックなどの処理が走らないので
+誤ったトランスパイルが行われる可能性がある.

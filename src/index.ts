@@ -14,3 +14,14 @@ let human = new Human(
   10,
   "address",
 );
+
+
+let MyFunction  = (a: number, b: number) :number => {
+
+  return a + b;
+}
+
+let result: number = MyFunction(4, 4);
+
+console.log(result);
+let s : string = result;

@@ -8,6 +8,8 @@ class Human {
   age;
   address;
 
+  static count: number = 0;
+
   constructor(name: string , age: number, address: string) {
     this.name = name;
     this.age = age;
@@ -35,6 +37,11 @@ class Human {
   }
   getAddress () {
     return this.address;
+  }
+
+  // 静的メソッド
+  static CountHuman() {
+    return Human.count;
   }
 }
 
